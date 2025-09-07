@@ -18,6 +18,8 @@ Una lista de tareas moderna que **funciona en tiempo real**, hecha con **Flutter
 - 💾 Persistencia 100% en Firestore.
 - 🎨 UI limpia y responsiva con Flutter.
 - 🧑‍💻 Código abierto y listo para producción o aprendizaje.
+- 🌗 Cambio de tema (Light/Dark) y modo oscuro.
+- 🚨 Alertas de error y de éxito personalizados.
 
 ---
 
