@@ -18,14 +18,14 @@ concurrency:
 jobs:
   # 🏗️ JOB 1: Build the Flutter app
   build:
-    if: github.event.release.target_commitish == 'device_preview' # Solo cuando se lanza desde la rama device_preview
     name: 🏗️ Build Flutter Web App
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout repository
+      - name: 📥 Checkout device_preview branch
         uses: actions/checkout@v4
         with:
+          ref: device_preview # Cambiamos esto para que se build la rama de destino
           fetch-depth: 0 # Necesario para git info
 
       - name: 🔍 Show build info
