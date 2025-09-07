@@ -1,0 +1,111 @@
+name: 🚀 Deploy Flutter Web to GitHub Pages
+
+on:
+  release:
+    types: [published] # Solo cuando publicas una release
+  workflow_dispatch: # Permite ejecutar manualmente
+    inputs:
+      release_name:
+        description: "🏷️ Release name (optional)"
+        required: false
+        default: "Manual deployment"
+
+# Concurrency para evitar deploys simultáneos
+concurrency:
+  group: pages-deployment
+  cancel-in-progress: true
+
+jobs:
+  # 🏗️ JOB 1: Build the Flutter app
+  build:
+    if: github.ref == 'refs/heads/device_preview' # Solo en la rama device_preview
+    name: 🏗️ Build Flutter Web App
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Necesario para git info
+
+      - name: 🔍 Show build info
+        run: |
+          echo "🏷️ Release: ${{ github.event.release.tag_name || 'manual' }}"
+          echo "📝 Release name: ${{ github.event.release.name || inputs.release_name }}"
+          echo "🌿 Branch: ${{ github.ref_name }}"
+          echo "💾 Commit: ${{ github.sha }}"
+          echo "👤 Triggered by: ${{ github.actor }}"
+
+      - name: ⚡ Cache Flutter SDK
+        uses: actions/cache@v4
+        with:
+          path: /opt/hostedtoolcache/flutter
+          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-flutter-
+
+      - name: 💙 Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+
+      - name: 🔧 Flutter doctor
+        run: flutter doctor -v
+
+      - name: 📦 Install dependencies
+        run: |
+          echo "📥 Installing Flutter dependencies..."
+          flutter pub get
+          echo "✅ Dependencies installed successfully!"
+
+      - name: 🧹 Clean previous builds
+        run: flutter clean
+
+      - name: 🔨 Build Flutter web app
+        run: |
+          echo "🌐 Building web app for production..."
+          echo "🔗 Base href will be: /${{ github.event.repository.name }}/"
+          flutter build web --release --base-href "/${{ github.event.repository.name }}/" --verbose
+          echo "✅ Build completed successfully!"
+
+      - name: 📋 Show build artifacts
+        run: |
+          echo "📁 Build directory contents:"
+          ls -la build/web/
+          echo "📊 Build size:"
+          du -sh build/web/
+
+      - name: 📦 Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "./build/web"
+
+  # 🚀 JOB 2: Deploy to GitHub Pages (depends on build)
+  deploy:
+    name: 🚀 Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: build # 👈 Esto crea el diagrama de dependencias
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: 🚀 Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: ✅ Deployment summary
+        run: |
+          echo "🎉 Deployment completed successfully!"
+          echo "🌐 Your app is available at:"
+          echo "   👉 ${{ steps.deployment.outputs.page_url }}"
+          echo ""
+          echo "📊 Deployment info:"
+          echo "   🏷️  Version: ${{ github.event.release.tag_name || 'manual' }}"
+          echo "   📝  Release: ${{ github.event.release.name || inputs.release_name }}"
+          echo "   ⏰  Time: $(date)"
+          echo "   👤  Actor: ${{ github.actor }}"
