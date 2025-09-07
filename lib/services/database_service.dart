@@ -29,7 +29,7 @@ class DatabaseService {
       await _taskRef.add(task);
       infoLog("task added: ${task.description}");
     } catch (e) {
-      errorLog("adding task error: ${e.toString().replaceAll("Exception: ", "")}");
+      rethrow;
     }
   }
 

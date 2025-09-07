@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:nowtask/helpers/show_alert.dart';
 import 'package:nowtask/models/task_model.dart';
 import 'package:nowtask/screens/add_task_screen.dart';
 import 'package:nowtask/screens/modals/delete_confirmation_dialog.dart';
@@ -22,6 +23,7 @@ class HomeScreen extends StatelessWidget {
 
     void deleteTask(Task task) {
       databaseService.deleteTask(task.id!);
+      showAlert(context, "Tarea eliminada con éxito!", AlertType.warning);
     }
 
     return Scaffold(
@@ -62,9 +64,7 @@ class HomeScreen extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const AddTaskScreen()));
-        },
+        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AddTaskScreen())),
         label: const Text('New task'),
         icon: const Icon(Icons.add),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
