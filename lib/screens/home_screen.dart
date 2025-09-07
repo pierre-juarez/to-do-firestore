@@ -10,7 +10,10 @@ import 'package:nowtask/widgets/empty_state.dart';
 import 'package:nowtask/widgets/task_item.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, required this.onToggleTheme, required this.isDark});
+
+  final VoidCallback onToggleTheme;
+  final bool isDark;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +31,7 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(onPressed: onToggleTheme, icon: Icon(isDark ? Icons.nightlight_round : Icons.wb_sunny)),
         title: const Text('My tasks'),
         centerTitle: true,
         elevation: 0,
