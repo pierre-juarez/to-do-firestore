@@ -18,7 +18,7 @@ concurrency:
 jobs:
   # 🏗️ JOB 1: Build the Flutter app
   build:
-    if: github.ref == 'refs/heads/device_preview' # Solo en la rama device_preview
+    if: github.event.release.target_commitish == 'device_preview' # Solo cuando se lanza desde la rama device_preview
     name: 🏗️ Build Flutter Web App
     runs-on: ubuntu-latest
 
