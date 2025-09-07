@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'NowTask',
       theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.tealAccent), useMaterial3: true),
       home: const HomeScreen(),
