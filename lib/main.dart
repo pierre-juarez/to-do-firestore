@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:device_preview/device_preview.dart';
@@ -10,7 +9,6 @@ void main() async {
   runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
-      await Firebase.initializeApp();
       runApp(DevicePreview(enabled: kIsWeb, builder: (context) => const MyApp()));
     },
     (error, stackTrace) {

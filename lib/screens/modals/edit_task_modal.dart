@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nowtask/models/task_model.dart';
-import 'package:nowtask/services/database_service.dart';
+import 'package:nowtask/services/fake_data_service.dart';
 
 void showEditTaskModal(BuildContext context, Task task) {
   final controller = TextEditingController(text: task.description);
@@ -34,7 +34,7 @@ void showEditTaskModal(BuildContext context, Task task) {
                 onPressed: () {
                   if (controller.text.trim().isNotEmpty) {
                     final updatedTask = task.copyWith(description: controller.text.trim(), updatedOn: Timestamp.now());
-                    DatabaseService().updateTask(updatedTask);
+                    FakeDataService().updateTask(updatedTask);
                     Navigator.pop(context);
                   }
                 },

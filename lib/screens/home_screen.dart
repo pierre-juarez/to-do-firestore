@@ -5,7 +5,7 @@ import 'package:nowtask/models/task_model.dart';
 import 'package:nowtask/screens/add_task_screen.dart';
 import 'package:nowtask/screens/modals/delete_confirmation_dialog.dart';
 import 'package:nowtask/screens/modals/edit_task_modal.dart';
-import 'package:nowtask/services/database_service.dart';
+import 'package:nowtask/services/fake_data_service.dart';
 import 'package:nowtask/widgets/empty_state.dart';
 import 'package:nowtask/widgets/task_item.dart';
 
@@ -17,7 +17,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final databaseService = DatabaseService();
+    final databaseService = FakeDataService();
 
     void updateTask(Task task) {
       final updatedTask = task.copyWith(isDone: !task.isDone, updatedOn: Timestamp.now());
@@ -32,30 +32,30 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(onPressed: onToggleTheme, icon: Icon(isDark ? Icons.nightlight_round : Icons.wb_sunny)),
-        title: const Text('My tasks'),
+        title: const Text('My tasks (10 max)'),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
       ),
-      body: StreamBuilder(
+      body: StreamBuilder<List<Task>>(
         stream: databaseService.getTasks(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const EmptyState();
           }
 
-          final tasks = snapshot.data!.docs;
+          final tasks = snapshot.data!;
 
           return ListView.builder(
             padding: const EdgeInsets.only(top: 8, bottom: 80),
             itemCount: tasks.length,
             itemBuilder: (context, index) {
-              final task = tasks[index].data();
+              final task = tasks[index];
               task.id = tasks[index].id;
               return TaskItem(
                 task: task,

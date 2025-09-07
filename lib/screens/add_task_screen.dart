@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nowtask/helpers/logs.dart';
 import 'package:nowtask/helpers/show_alert.dart';
 import 'package:nowtask/models/task_model.dart';
-import 'package:nowtask/services/database_service.dart';
+import 'package:nowtask/services/fake_data_service.dart';
 
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({super.key});
@@ -17,7 +17,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   final _titleController = TextEditingController();
   bool _isLoading = false;
 
-  final databaseService = DatabaseService();
+  final databaseService = FakeDataService();
 
   Future<void> _addTask() async {
     try {
